@@ -25,9 +25,6 @@
 
 #include "./IMU901/ringbuffer.h"
 
-
-
-
 /**
   * @brief  fifo³õÊ¼»¯
   * @param  fifo: ÊµÀý
@@ -128,13 +125,11 @@ uint16_t ringbuffer_out(ringbuffer_t *fifo, uint8_t *buf, uint16_t len)
 {
     uint16_t remainToread = ringbuffer_getUsedSize(fifo);
 
-    if (remainToread > len) 
-    {
+    if (remainToread > len) {
         remainToread = len;
     }
 
-    for (int i = 0; i < remainToread; i++)
-    {
+    for (int i = 0; i < remainToread; i++) {
         buf[i] = fifo->buffer[fifo->out];
         fifo->out = (fifo->out + 1) % fifo->size;
     }

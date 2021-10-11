@@ -22,8 +22,8 @@
 
 /* USER CODE BEGIN 0 */
 #include "./IMU901/ringbuffer.h"
-#define UART2_RX_BUFFER_SIZE	256
-uint8_t uart2RxBuffer[UART2_RX_BUFFER_SIZE];
+#define UART3_RX_BUFFER_SIZE	256
+uint8_t uart2RxBuffer[UART3_RX_BUFFER_SIZE];
 
 ringbuffer_t uart3RxFifo;
 
@@ -90,7 +90,7 @@ void MX_USART3_UART_Init(void)
     HAL_NVIC_EnableIRQ(USART2_IRQn);
     HAL_NVIC_SetPriority(USART2_IRQn, 3, 3);
 
-    ringbuffer_init(&uart3RxFifo, uart2RxBuffer, UART2_RX_BUFFER_SIZE);
+    ringbuffer_init(&uart3RxFifo, uart2RxBuffer, UART3_RX_BUFFER_SIZE);
 
   /* USER CODE END USART3_Init 2 */
 
@@ -258,7 +258,7 @@ uint16_t usart3_getRxData(uint8_t *buf, uint16_t len)
 
 
 /**
- * @brief       串口X中断服务函数
+ * @brief       串口X中断服务函数的调用
  * @param       无
  * @retval      无
  */

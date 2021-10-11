@@ -1,23 +1,25 @@
 /**
   ****************************************************************************************************
   * @file    	imu901.c
-  * @author		ÕıµãÔ­×ÓÍÅ¶Ó(ALIENTEK)
+  * @author		æ­£ç‚¹åŸå­å›¢é˜Ÿ(ALIENTEK)
   * @version    V1.0
   * @date		2020-04-17
-  * @brief   	imu901Ä£¿éÖ¸ÁîÇı¶¯
-  * @license   	Copyright (c) 2020-2032, ¹ãÖİÊĞĞÇÒíµç×Ó¿Æ¼¼ÓĞÏŞ¹«Ë¾
+  * @brief   	imu901æ¨¡å—æŒ‡ä»¤é©±åŠ¨
+  * @license   	Copyright (c) 2020-2032, å¹¿å·å¸‚æ˜Ÿç¿¼ç”µå­ç§‘æŠ€æœ‰é™å…¬å¸
   ****************************************************************************************************
   * @attention
   *
-  * ÊµÑéÆ½Ì¨:ÕıµãÔ­×Ó STM32¿ª·¢°å
-  * ÔÚÏßÊÓÆµ:www.yuanzige.com
-  * ¼¼ÊõÂÛÌ³:www.openedv.com
-  * ¹«Ë¾ÍøÖ·:www.alientek.com
-  * ¹ºÂòµØÖ·:openedv.taobao.com
+  * å®éªŒå¹³å°:æ­£ç‚¹åŸå­ STM32å¼€å‘æ¿
+  * åœ¨çº¿è§†é¢‘:www.yuanzige.com
+  * æŠ€æœ¯è®ºå›:www.openedv.com
+  * å…¬å¸ç½‘å€:www.alientek.com
+  * è´­ä¹°åœ°å€:openedv.taobao.com
   *
-  * ĞŞ¸ÄËµÃ÷
+  * ä¿®æ”¹è¯´æ˜
   * V1.0 2020-04-17
-  * µÚÒ»´Î·¢²¼
+  * ç¬¬ä¸€æ¬¡å‘å¸ƒ
+  * 
+  * framist ä¿®æ”¹
   *
   ****************************************************************************************************
   */
@@ -28,35 +30,30 @@
 
 
 
-/* Ä£¿éÖ÷¶¯ÉÏ´«µÄÊı¾İ(´®¿Ú½âÎöºó) */
-attitude_t		attitude;		/*!< ×ËÌ¬½Ç */
+/* æ¨¡å—ä¸»åŠ¨ä¸Šä¼ çš„æ•°æ®(ä¸²å£è§£æå) */
+attitude_t		attitude;		/*!< å§¿æ€è§’ */
 quaternion_t	quaternion;
 gyroAcc_t 		gyroAccData;
 mag_t			magData;
 baro_t			baroData;
 ioStatus_t		iostatus;
 
-/* Ä£¿é¼Ä´æÆ÷²ÎÊıÖµ */
+/* æ¨¡å—å¯„å­˜å™¨å‚æ•°å€¼ */
 regValue_t  	imu901Param;
 
-/* ´®¿Ú½ÓÊÕ½âÎö³É¹¦µÄÊı¾İ°ü */
+/* ä¸²å£æ¥æ”¶è§£ææˆåŠŸçš„æ•°æ®åŒ… */
 atkp_t 			rxPacket;
 
 
-/* ÍÓÂİÒÇ¼ÓËÙ¶ÈÁ¿³Ì±í */
+/* é™€èºä»ªåŠ é€Ÿåº¦é‡ç¨‹è¡¨ */
 const uint16_t gyroFsrTable[4] = {250, 500, 1000, 2000};
 const uint8_t  accFsrTable[4] = {2, 4, 8, 16};
 
 
-
-
-
-
 /**
-  * @brief  ½ÓÊÕ´®¿ÚÊı¾İ½â°üÁ÷³Ì
+  * @brief  æ¥æ”¶ä¸²å£æ•°æ®è§£åŒ…æµç¨‹
   */
-static enum
-{
+static enum {
     waitForStartByte1,
     waitForStartByte2,
     waitForMsgID,
@@ -67,20 +64,18 @@ static enum
 
 
 /**
-  * @brief  imu901Ä£¿é´®¿ÚÊı¾İ½âÎö£¨´®¿Ú½ÓÊÕµÄÃ¿Ò»¸öÊı¾İĞè´«Èë´¦Àí£©
-  *	@note	´Ëº¯ÊıĞèÒªÊµÊ±µ÷ÓÃ
-  * @param  ch: ´®¿Ú½ÓÊÕµÄµ¥¸öÊı¾İ
-  * @retval uint8_t: 0 ÎŞ°ü 1 ÓĞĞ§°ü
+  * @brief  imu901æ¨¡å—ä¸²å£æ•°æ®è§£æï¼ˆä¸²å£æ¥æ”¶çš„æ¯ä¸€ä¸ªæ•°æ®éœ€ä¼ å…¥å¤„ç†ï¼‰
+  *	@note	æ­¤å‡½æ•°éœ€è¦å®æ—¶è°ƒç”¨
+  * @param  ch: ä¸²å£æ¥æ”¶çš„å•ä¸ªæ•°æ®
+  * @retval uint8_t: 0 æ— åŒ… 1 æœ‰æ•ˆåŒ…
   */
 uint8_t imu901_unpack(uint8_t ch)
 {
     static uint8_t cksum = 0, dataIndex = 0;
 
-    switch (rxState)
-    {
+    switch (rxState) {
         case waitForStartByte1:
-            if (ch == UP_BYTE1)
-            {
+            if (ch == UP_BYTE1) {
                 rxState = waitForStartByte2;
                 rxPacket.startByte1 = ch;
             }
@@ -89,13 +84,10 @@ uint8_t imu901_unpack(uint8_t ch)
             break;
 
         case waitForStartByte2:
-            if (ch == UP_BYTE2 || ch == UP_BYTE2_ACK)
-            {
+            if (ch == UP_BYTE2 || ch == UP_BYTE2_ACK) {
                 rxState = waitForMsgID;
                 rxPacket.startByte2 = ch;
-            }
-            else
-            {
+            } else {
                 rxState = waitForStartByte1;
             }
 
@@ -109,15 +101,12 @@ uint8_t imu901_unpack(uint8_t ch)
             break;
 
         case waitForDataLength:
-            if (ch <= ATKP_MAX_DATA_SIZE)
-            {
+            if (ch <= ATKP_MAX_DATA_SIZE) {
                 rxPacket.dataLen = ch;
                 dataIndex = 0;
-                rxState = (ch > 0) ? waitForData : waitForChksum1;	/*ch=0,Êı¾İ³¤¶ÈÎª0£¬Ğ£Ñé1*/
+                rxState = (ch > 0) ? waitForData : waitForChksum1;	/*ch=0,æ•°æ®é•¿åº¦ä¸º0ï¼Œæ ¡éªŒ1*/
                 cksum += ch;
-            }
-            else
-            {
+            } else {
                 rxState = waitForStartByte1;
             }
 
@@ -128,21 +117,20 @@ uint8_t imu901_unpack(uint8_t ch)
             dataIndex++;
             cksum += ch;
 
-            if (dataIndex == rxPacket.dataLen)
-            {
+            if (dataIndex == rxPacket.dataLen) {
                 rxState = waitForChksum1;
             }
 
             break;
 
         case waitForChksum1:
-            if (cksum == ch)	/*!< Ğ£×¼ÕıÈ··µ»Ø1 */
+            if (cksum == ch)	/*!< æ ¡å‡†æ­£ç¡®è¿”å›1 */
             {
                 rxPacket.checkSum = cksum;
 
                 return 1;
             }
-            else	/*!< Ğ£Ñé´íÎó */
+            else	/*!< æ ¡éªŒé”™è¯¯ */
             {
                 rxState = waitForStartByte1;
             }
@@ -161,15 +149,14 @@ uint8_t imu901_unpack(uint8_t ch)
 
 
 /**
-  * @brief  ATKPÊı¾İ°ü½âÎö
-  * @param  packet: atkpÊı¾İ°ü
+  * @brief  ATKPæ•°æ®åŒ…è§£æ
+  * @param  packet: atkpæ•°æ®åŒ…
   * @retval None
   */
 void atkpParsing(atkp_t *packet)
 {
-    /* ×ËÌ¬½Ç */
-    if (packet->msgID == UP_ATTITUDE)
-    {
+    /* å§¿æ€è§’ */
+    if (packet->msgID == UP_ATTITUDE) {
         int16_t data = (int16_t) (packet->data[1] << 8) | packet->data[0];
         attitude.roll = (float) data / 32768 * 180;
 
@@ -180,9 +167,8 @@ void atkpParsing(atkp_t *packet)
         attitude.yaw = (float) data / 32768 * 180;
     }
 
-    /* ËÄÔªÊı */
-    else if (packet->msgID == UP_QUAT)
-    {
+    /* å››å…ƒæ•° */
+    else if (packet->msgID == UP_QUAT) {
         int16_t data = (int16_t) (packet->data[1] << 8) | packet->data[0];
         quaternion.q0 = (float) data / 32768;
 
@@ -196,9 +182,8 @@ void atkpParsing(atkp_t *packet)
         quaternion.q3 = (float) data / 32768;
     }
 
-    /* ÍÓÂİÒÇ¼ÓËÙ¶ÈÊı¾İ */
-    else if (packet->msgID == UP_GYROACCDATA)
-    {
+    /* é™€èºä»ªåŠ é€Ÿåº¦æ•°æ® */
+    else if (packet->msgID == UP_GYROACCDATA) {
         gyroAccData.acc[0] = (int16_t) (packet->data[1] << 8) | packet->data[0];
         gyroAccData.acc[1] = (int16_t) (packet->data[3] << 8) | packet->data[2];
         gyroAccData.acc[2] = (int16_t) (packet->data[5] << 8) | packet->data[4];
@@ -207,18 +192,17 @@ void atkpParsing(atkp_t *packet)
         gyroAccData.gyro[1] = (int16_t) (packet->data[9] << 8) | packet->data[8];
         gyroAccData.gyro[2] = (int16_t) (packet->data[11] << 8) | packet->data[10];
 
-        gyroAccData.faccG[0] = (float)gyroAccData.acc[0] / 32768 * accFsrTable[imu901Param.accFsr]; 		/*!< 4´ú±í4G£¬ÉÏÎ»»úÉèÖÃºÃµÄÁ¿³Ì */
+        gyroAccData.faccG[0] = (float)gyroAccData.acc[0] / 32768 * accFsrTable[imu901Param.accFsr]; 		/*!< 4ä»£è¡¨4Gï¼Œä¸Šä½æœºè®¾ç½®å¥½çš„é‡ç¨‹ */
         gyroAccData.faccG[1] = (float)gyroAccData.acc[1] / 32768 * accFsrTable[imu901Param.accFsr];
         gyroAccData.faccG[2] = (float)gyroAccData.acc[2] / 32768 * accFsrTable[imu901Param.accFsr];
 
-        gyroAccData.fgyroD[0] = (float)gyroAccData.gyro[0] / 32768 * gyroFsrTable[imu901Param.gyroFsr]; 	/*!< 2000´ú±í2000¡ã/S£¬ÉÏÎ»»úÉèÖÃºÃµÄÁ¿³Ì */
+        gyroAccData.fgyroD[0] = (float)gyroAccData.gyro[0] / 32768 * gyroFsrTable[imu901Param.gyroFsr]; 	/*!< 2000ä»£è¡¨2000Â°/Sï¼Œä¸Šä½æœºè®¾ç½®å¥½çš„é‡ç¨‹ */
         gyroAccData.fgyroD[1] = (float)gyroAccData.gyro[1] / 32768 * gyroFsrTable[imu901Param.gyroFsr];
         gyroAccData.fgyroD[2] = (float)gyroAccData.gyro[2] / 32768 * gyroFsrTable[imu901Param.gyroFsr];
     }
 
-    /* ´Å³¡Êı¾İ */
-    else if (packet->msgID == UP_MAGDATA)
-    {
+    /* ç£åœºæ•°æ® */
+    else if (packet->msgID == UP_MAGDATA) {
         magData.mag[0] = (int16_t) (packet->data[1] << 8) | packet->data[0];
         magData.mag[1] = (int16_t) (packet->data[3] << 8) | packet->data[2];
         magData.mag[2] = (int16_t) (packet->data[5] << 8) | packet->data[4];
@@ -227,9 +211,8 @@ void atkpParsing(atkp_t *packet)
         magData.temp = (float) data / 100;
     }
 
-    /* ÆøÑ¹¼ÆÊı¾İ */
-    else if (packet->msgID == UP_BARODATA)
-    {
+    /* æ°”å‹è®¡æ•°æ® */
+    else if (packet->msgID == UP_BARODATA) {
         baroData.pressure = (int32_t) (packet->data[3] << 24) | (packet->data[2] << 16) |
                             (packet->data[1] << 8) | packet->data[0];
 
@@ -240,9 +223,8 @@ void atkpParsing(atkp_t *packet)
         baroData.temp = (float) data / 100;
     }
 
-    /* ¶Ë¿Ú×´Ì¬Êı¾İ */
-    else if (packet->msgID == UP_D03DATA)
-    {
+    /* ç«¯å£çŠ¶æ€æ•°æ® */
+    else if (packet->msgID == UP_D03DATA) {
         iostatus.d03data[0] = (uint16_t) (packet->data[1] << 8) | packet->data[0];
         iostatus.d03data[1] = (uint16_t) (packet->data[3] << 8) | packet->data[2];
         iostatus.d03data[2] = (uint16_t) (packet->data[5] << 8) | packet->data[4];
@@ -252,10 +234,10 @@ void atkpParsing(atkp_t *packet)
 
 
 /**
-  * @brief  Ğ´¼Ä´æÆ÷
-  * @param  reg: ¼Ä´æÆ÷ÁĞ±íµØÖ·
-  * @param  data: Êı¾İ
-  * @param  datalen: Êı¾İµÄ³¤¶ÈÖ»ÄÜÊÇ 1»ò2
+  * @brief  å†™å¯„å­˜å™¨
+  * @param  reg: å¯„å­˜å™¨åˆ—è¡¨åœ°å€
+  * @param  data: æ•°æ®
+  * @param  datalen: æ•°æ®çš„é•¿åº¦åªèƒ½æ˜¯ 1æˆ–2
   * @retval None
   */
 void atkpWriteReg(enum regTable reg, uint16_t data, uint8_t datalen)
@@ -265,7 +247,7 @@ void atkpWriteReg(enum regTable reg, uint16_t data, uint8_t datalen)
     buf[0] = 0x55;
     buf[1] = 0xAF;
     buf[2] = reg;
-    buf[3] = datalen; 	/*!< datalenÖ»ÄÜÊÇ1»òÕß2 */
+    buf[3] = datalen; 	/*!< datalenåªèƒ½æ˜¯1æˆ–è€…2 */
     buf[4] = data;
 
     if (datalen == 2)
@@ -283,8 +265,8 @@ void atkpWriteReg(enum regTable reg, uint16_t data, uint8_t datalen)
 
 
 /**
-  * @brief  ·¢ËÍ¶Á¼Ä´æÆ÷ÃüÁî
-  * @param  reg: ¼Ä´æÆ÷ÁĞ±íµØÖ·
+  * @brief  å‘é€è¯»å¯„å­˜å™¨å‘½ä»¤
+  * @param  reg: å¯„å­˜å™¨åˆ—è¡¨åœ°å€
   * @retval None
   */
 static void atkpReadRegSend(enum regTable reg)
@@ -303,10 +285,10 @@ static void atkpReadRegSend(enum regTable reg)
 
 
 /**
-  * @brief  ¶Á¼Ä´æÆ÷
-  * @param  reg: ¼Ä´æÆ÷µØÖ·
-  * @param  data: ¶ÁÈ¡µ½µÄÊı¾İ
-  * @retval uint8_t: 0¶ÁÈ¡Ê§°Ü£¨³¬Ê±£© 1¶ÁÈ¡³É¹¦
+  * @brief  è¯»å¯„å­˜å™¨
+  * @param  reg: å¯„å­˜å™¨åœ°å€
+  * @param  data: è¯»å–åˆ°çš„æ•°æ®
+  * @retval uint8_t: 0è¯»å–å¤±è´¥ï¼ˆè¶…æ—¶ï¼‰ 1è¯»å–æˆåŠŸ
   */
 uint8_t atkpReadReg(enum regTable reg, int16_t *data)
 {
@@ -315,17 +297,16 @@ uint8_t atkpReadReg(enum regTable reg, int16_t *data)
 
     atkpReadRegSend(reg);
 
-    while (1)
-    {
-        if (imu901_uart_receive(&ch, 1)) 	/*!< »ñÈ¡´®¿ÚfifoÒ»¸ö×Ö½Ú */
+    while (1) {
+        if (imu901_uart_receive(&ch, 1)) 	/*!< è·å–ä¸²å£fifoä¸€ä¸ªå­—èŠ‚ */
         {
-            if (imu901_unpack(ch)) 			/*!< ÓĞÓĞĞ§Êı¾İ°ü */
+            if (imu901_unpack(ch)) 			/*!< æœ‰æœ‰æ•ˆæ•°æ®åŒ… */
             {
-                if (rxPacket.startByte2 == UP_BYTE2) /*!< Ö÷¶¯ÉÏ´«°ü */
+                if (rxPacket.startByte2 == UP_BYTE2) /*!< ä¸»åŠ¨ä¸Šä¼ åŒ… */
                 {
                     atkpParsing(&rxPacket);
                 }
-                else if (rxPacket.startByte2 == UP_BYTE2_ACK) /*!< ¶Á¼Ä´æÆ÷Ó¦´ğ°ü */
+                else if (rxPacket.startByte2 == UP_BYTE2_ACK) /*!< è¯»å¯„å­˜å™¨åº”ç­”åŒ… */
                 {
                     if (rxPacket.dataLen == 1)
                         *data = rxPacket.data[0];
@@ -336,12 +317,11 @@ uint8_t atkpReadReg(enum regTable reg, int16_t *data)
                 }
             }
         }
-        else
-        {
-            HAL_Delay(1);
+        else {
+            HAL_Delay(5);
             timeout++;
 
-            if (timeout > 200) /*!< ³¬Ê±·µ»Ø */
+            if (timeout > 200) /*!< è¶…æ—¶è¿”å› */
                 return 0;
         }
     }
@@ -350,25 +330,26 @@ uint8_t atkpReadReg(enum regTable reg, int16_t *data)
 
 
 /**
-  * @brief  Ä£¿é³õÊ¼»¯
+  * @brief  æ¨¡å—åˆå§‹åŒ–
   * @param  None
-  * @retval None
+  * @retval uint8_t: 0è¯»å–å¤±è´¥ï¼ˆè¶…æ—¶ï¼‰ 1è¯»å–æˆåŠŸ
   */
-void imu901_init(void)
+int imu901_init(void)
 {
     int16_t data;
-
+    uint8_t f;
     /**
-      *	 Ğ´Èë¼Ä´æÆ÷²ÎÊı£¨²âÊÔ£©
-      *	 ÕâÀïÌá¹©Ğ´ÈëÒıÓÃÀı×Ó£¬ÓÃ»§¿ÉÒÔÔÚÕâĞ´ÈëÒ»Ğ©Ä¬ÈÏ²ÎÊı£¬
-      *  ÈçÍÓÂİÒÇ¼ÓËÙ¶ÈÁ¿³Ì¡¢´ø¿í¡¢»Ø´«ËÙÂÊ¡¢PWMÊä³öµÈ¡£
+      *	 å†™å…¥å¯„å­˜å™¨å‚æ•°ï¼ˆæµ‹è¯•ï¼‰
+      *	 è¿™é‡Œæä¾›å†™å…¥å¼•ç”¨ä¾‹å­ï¼Œç”¨æˆ·å¯ä»¥åœ¨è¿™å†™å…¥ä¸€äº›é»˜è®¤å‚æ•°ï¼Œ
+      *  å¦‚é™€èºä»ªåŠ é€Ÿåº¦é‡ç¨‹ã€å¸¦å®½ã€å›ä¼ é€Ÿç‡ã€PWMè¾“å‡ºç­‰ã€‚
       */
     atkpWriteReg(REG_GYROFSR, 3, 1);
     atkpWriteReg(REG_ACCFSR, 1, 1);
-	atkpWriteReg(REG_SAVE, 0, 1); 	/* ·¢ËÍ±£´æ²ÎÊıÖÁÄ£¿éÄÚ²¿Flash£¬·ñÔòÄ£¿éµôµç²»±£´æ */
+	atkpWriteReg(REG_SAVE, 0, 1); 	/* å‘é€ä¿å­˜å‚æ•°è‡³æ¨¡å—å†…éƒ¨Flashï¼Œå¦åˆ™æ¨¡å—æ‰ç”µä¸ä¿å­˜ */
 
-    /* ¶Á³ö¼Ä´æÆ÷²ÎÊı£¨²âÊÔ£© */
-    atkpReadReg(REG_GYROFSR, &data);
+    /* è¯»å‡ºå¯„å­˜å™¨å‚æ•°ï¼ˆæµ‹è¯•ï¼‰ */
+    f = atkpReadReg(REG_GYROFSR, &data);
+    if(f == 0) return 0;
     imu901Param.gyroFsr = data;
 
     atkpReadReg(REG_ACCFSR, &data);
@@ -379,18 +360,31 @@ void imu901_init(void)
 
     atkpReadReg(REG_ACCBW, &data);
     imu901Param.accBW = data;
+    return 1;
 }
 
 
+void imu901_read_once(void){
+    uint8_t ch;
+    while (imu901_uart_receive(&ch, 1)) /*!< è·å–ä¸²å£fifoä¸€ä¸ªå­—èŠ‚ */
+    {
+      if (imu901_unpack(ch)) /*!< è§£æå‡ºæœ‰æ•ˆæ•°æ®åŒ… */
+      {
+        if (rxPacket.startByte2 == UP_BYTE2) /*!< ä¸»åŠ¨ä¸Šä¼ çš„æ•°æ®åŒ… */
+        {
+          atkpParsing(&rxPacket);
+        }
+      }
+    }
+}
 
-
-
-
-
-
-
+void imu901_print(void) {
+    printf("\r\n");
+    printf("å§¿æ€è§’[XYZ]: %-6.1f %-6.1f %-6.1f (Â°)\r\n", attitude.roll, attitude.pitch, attitude.yaw);
+    printf("åŠ é€Ÿåº¦[XYZ]: %-6.3f %-6.3f %-6.3f (g)\r\n", gyroAccData.faccG[0], gyroAccData.faccG[1], gyroAccData.faccG[2]);
+    printf("è§’é€Ÿåº¦[XYZ]: %-6.1f %-6.1f %-6.1f (Â°/s)\r\n", gyroAccData.fgyroD[0], gyroAccData.fgyroD[1], gyroAccData.fgyroD[2]);
+    printf("ç£åœº[XYZ]: %-6d %-6d %-6d (uT)\r\n", magData.mag[0], magData.mag[1], magData.mag[2]);
+    printf("æ°”å‹:    %-6dPa   %-6dcm\r\n", baroData.pressure, baroData.altitude);
+}
 
 /*******************************END OF FILE************************************/
-
-
-
