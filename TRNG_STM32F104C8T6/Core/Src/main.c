@@ -20,7 +20,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "oled.h"
+#include "./OLED/oled.h"
+#include "./IMU901/imu901.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,6 +52,50 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void connect_PC(void) {
+  OLED_Clear();
+  
+  OLED_ShowString(0,0,"Connect to PC...",16,0);
+  int i;
+
+  while(1) {
+    if(scanf("%d",&i) != EOF ) break; // TODO Timeout
+  }
+  if(i==1) {
+    OLED_ShowString(0,2,"    OK : )",16,0);
+  }else {
+    OLED_ShowString(0,2,"  fault :(",16,0);
+    while(1);
+  }
+  printf("Connect:%d\n",i);
+  HAL_Delay(1000);
+}
+
+void welcome(void) {
+  Display1();
+  HAL_Delay(1000);
+}
+
+void init_mult_entropy(){
+  OLED_Clear();
+  OLED_ShowString(0, 0, "find source...", 16, 0);
+  OLED_ShowString(2, 2,  "ADC   ", 12, 1);
+  HAL_Delay(100);
+  
+  imu901_init();							/* IMU901模块初始 */
+    
+  OLED_ShowString(42, 2, "Bar.  ", 12, 0);  //barometer
+  HAL_Delay(100);
+  OLED_ShowString(82, 2, "Acc.*3", 12, 0); //accelerometer
+  HAL_Delay(100);
+  OLED_ShowString(2, 3,  "Mag.*3", 12, 0);  //magnetometer
+  HAL_Delay(100);
+  OLED_ShowString(42, 3, "Gyr.*3", 12, 0); //gyroscope
+  HAL_Delay(100);
+  OLED_ShowString(82, 3, "Geiger", 12, 0); //Geiger
+  HAL_Delay(1000);
+}
+
 
 /* USER CODE END 0 */
 
@@ -61,7 +106,7 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  int i;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -87,41 +132,11 @@ int main(void)
   MX_ADC1_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  OLED_Init(1);
-
-  //欢迎界面
-  Display1();
-  HAL_Delay(1000);
-
-  //连接 PC
-  OLED_Clear();
-  OLED_ShowString(0,0,"Connect to PC...",16,0);
-  int i;
-  scanf("%d",&i);
-  printf("Connect:%d\n",i);
-  if(i==1){
-    OLED_ShowString(0,2,"    OK : )",16,0);
-  }else{
-    OLED_ShowString(0,2,"  fault :(",16,0);
-    while(1);
-  }
-  HAL_Delay(1000);
-
-  //初始化熵源
-  OLED_Clear();
-  OLED_ShowString(0, 0, "find source...", 16, 0);
-  OLED_ShowString(2, 2,  "ADC   ", 12, 1);
-  HAL_Delay(100);
-  OLED_ShowString(42, 2, "Bar.  ", 12, 0);  //barometer
-  HAL_Delay(100);
-  OLED_ShowString(82, 2, "Acc.*3", 12, 0); //accelerometer
-  HAL_Delay(100);
-  OLED_ShowString(2, 3,  "Mag.*3", 12, 0);  //magnetometer
-  HAL_Delay(100);
-  OLED_ShowString(42, 3, "Gyr.*3", 12, 0); //gyroscope
-  HAL_Delay(100);
-  OLED_ShowString(82, 3, "Geiger", 12, 0); //Geiger
-  HAL_Delay(1000);
+  
+  OLED_Init(1);         // 初始化OLED
+  welcome();            //欢迎界面
+  connect_PC();         //连接 PC
+  init_mult_entropy();  //初始化熵源
 
   //开始输出
   OLED_ShowString(0, 0, "[TRNG]          ", 16, 0);
@@ -138,9 +153,36 @@ int main(void)
     HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
     HAL_ADC_Start(&hadc1);
     printf("{plotter:%d}\n",HAL_ADC_GetValue(&hadc1)%11-5);
-      
+    
+    while (1) {
+      scanf("%d",&i);
+      if(i==1) break;
+    }
+    
+
     OLED_ShowNum(48,0,HAL_ADC_GetValue(&hadc1),4,16,0);
-    //HAL_Delay(100);
+
+    uint8_t ch;
+    while (imu901_uart_receive(&ch, 1)) /*!< 获取串口fifo一个字节 */
+    {
+      if (imu901_unpack(ch)) /*!< 解析出有效数据包 */
+      {
+        if (rxPacket.startByte2 == UP_BYTE2) /*!< 主动上传的数据包 */
+        {
+          atkpParsing(&rxPacket);
+        }
+      }
+    }
+
+
+      printf("\r\n");
+      printf("姿态角[XYZ]:    %-6.1f     %-6.1f     %-6.1f   (°)\r\n", attitude.roll, attitude.pitch, attitude.yaw);
+      printf("加速度[XYZ]:    %-6.3f     %-6.3f     %-6.3f   (g)\r\n", gyroAccData.faccG[0], gyroAccData.faccG[1], gyroAccData.faccG[2]);
+      printf("角速度[XYZ]:    %-6.1f     %-6.1f     %-6.1f   (°/s)\r\n", gyroAccData.fgyroD[0], gyroAccData.fgyroD[1], gyroAccData.fgyroD[2]);
+      printf("磁场[XYZ]  :    %-6d     %-6d     %-6d   (uT)\r\n", magData.mag[0], magData.mag[1], magData.mag[2]);
+      printf("气压 	   :    %-6dPa   %-6dcm\r\n", baroData.pressure, baroData.altitude);
+
+    HAL_Delay(1);
     
   }
   /* USER CODE END 3 */

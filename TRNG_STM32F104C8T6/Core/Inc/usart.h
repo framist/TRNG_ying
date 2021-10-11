@@ -42,7 +42,9 @@ void MX_USART1_UART_Init(void);
 void MX_USART3_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+uint8_t usart3_sendData(uint8_t *data, uint16_t len);
+uint16_t usart3_getRxData(uint8_t *buf, uint16_t len);
+void my_USART3_IRQHandler(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

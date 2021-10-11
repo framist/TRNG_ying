@@ -21,6 +21,11 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
+#include "./IMU901/ringbuffer.h"
+#define UART2_RX_BUFFER_SIZE	256
+uint8_t uart2RxBuffer[UART2_RX_BUFFER_SIZE];
+
+ringbuffer_t uart3RxFifo;
 
 /* USER CODE END 0 */
 
@@ -81,6 +86,11 @@ void MX_USART3_UART_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN USART3_Init 2 */
+    __HAL_UART_ENABLE_IT(&huart3, UART_IT_RXNE);
+    HAL_NVIC_EnableIRQ(USART2_IRQn);
+    HAL_NVIC_SetPriority(USART2_IRQn, 3, 3);
+
+    ringbuffer_init(&uart3RxFifo, uart2RxBuffer, UART2_RX_BUFFER_SIZE);
 
   /* USER CODE END USART3_Init 2 */
 
@@ -222,6 +232,46 @@ int fgetc(FILE *f)
   HAL_UART_Receive(&huart1, &ch, 1, 0xffff);
   return ch;
 }
+
+/**
+  * @brief  串口2发送
+  * @param  data: 发送的数据
+  * @param  len: 数据长度
+  * @retval uint8_t: 0成功 其他：失败
+  */
+uint8_t usart3_sendData(uint8_t *data, uint16_t len)
+{
+	return HAL_UART_Transmit(&huart3, data, len, 500);
+}
+
+
+/**
+  * @brief  获取串口2接收fifo的数据
+  * @param  buf: 存放的缓冲区
+  * @param  len: 需要获取的长度
+  * @retval uint16_t: 实际获取到的长度 0表示没有数据可获取
+  */
+uint16_t usart3_getRxData(uint8_t *buf, uint16_t len)
+{
+    return ringbuffer_out(&uart3RxFifo, buf, len);
+}
+
+
+/**
+ * @brief       串口X中断服务函数
+ * @param       无
+ * @retval      无
+ */
+void my_USART3_IRQHandler(void)
+{
+    if (__HAL_UART_GET_FLAG(&huart3, UART_FLAG_RXNE) != RESET) /*!< 接收非空中断 */
+    {
+        uint8_t res = huart3.Instance->DR;
+        ringbuffer_in_check(&uart3RxFifo, (uint8_t *)&res, 1); /*!< 将接收到的数据放入FIFO */
+    }
+}
+
+
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

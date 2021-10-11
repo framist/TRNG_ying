@@ -1,6 +1,6 @@
-#include "oled.h"
+#include "./OLED/oled.h"
 #include "i2c.h"
-#include "oledfont.h"
+#include "./OLED/oledfont.h"
 /* framist */
 void OLED_WR_CMD(uint8_t cmd);
 void OLED_WR_DATA(uint8_t data);
