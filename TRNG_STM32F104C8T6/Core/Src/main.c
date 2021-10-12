@@ -5,8 +5,8 @@
   * @brief          : TRNG 项目     嘤嘤嘤 团队
   * @author         : framist
   ******************************************************************************
-  * @attention
-  *
+  * @attention 项目构建中...
+  *            使用 STM32F103C8T6
   *
   ******************************************************************************
   */
@@ -53,7 +53,12 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-static void connect_PC(void) {
+/**
+ * @brief 连接PC
+ * 
+ * @return int 成功:0 ; 其他:阻塞
+ */
+static int connect_PC(void) {
     OLED_Clear();
     
     OLED_ShowString(0,0,"Connect to PC...",16,0);
@@ -70,12 +75,14 @@ static void connect_PC(void) {
     }
     printf("Connect:%d\n",i);
     HAL_Delay(1000);
+    return 0;
 }
 
 static void welcome(void) {
     Display_welcome();
     HAL_Delay(1000);
 }
+
 static int init_entropy_ADC(){
     OLED_ShowString(2, 2,  "ADC   ", 12, 1);
     HAL_Delay(100);
@@ -109,9 +116,29 @@ static int init_entropy_imu901() {
 }
 
 static int init_entropy_geiger(){
+    // TODO
     OLED_ShowString(82, 3, "Geiger", 12, 0); //Geiger
     HAL_Delay(1000);
     return 1;
+}
+
+
+enum PC_MSG {
+    PC_MSG_NAK,         // Negative-Acknowledgment 无效消息，备用
+    PC_MSG_ACK,         // Acknowledgment OK
+    PC_MSG_STOP,        // 上位机主动终止
+    PC_MSG_PKC_ERROR,   // public-key Certificate 证书认证错误
+    PC_MSG_TRNG_ERROR,  // 随机数错误，如判断出现非随机现象
+    PC_MSG_PC_ERROR,    // 上位机错误
+};
+
+//串口1的停止等待协议
+static void usart1_stop_and_wait(){
+    int i = 0;
+    while (1) {
+        scanf("%d",&i);
+        if(i==1) break;
+    }
 }
 
 /* USER CODE END 0 */
@@ -173,21 +200,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
-    HAL_ADC_Start(&hadc1);
-    printf("{plotter:%d}\n",HAL_ADC_GetValue(&hadc1)%11-5);
+    HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13); // 翻转LED
+
+    ADC_read_print();
     
-    i = 0;
-    while (1) {
-      scanf("%d",&i);
-      if(i==1) break;
-    }
+    usart1_stop_and_wait();
 
     // OLED_ShowNum(48,0,HAL_ADC_GetValue(&hadc1),4,16,0);
 
     imu901_read_once();
-    if(imu901Flag){
-      imu901_print();
+    if(imu901Flag) {
+        imu901_print();
     }
 
     HAL_Delay(1);

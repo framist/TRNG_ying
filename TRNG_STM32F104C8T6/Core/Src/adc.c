@@ -116,6 +116,10 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 }
 
 /* USER CODE BEGIN 1 */
+void ADC_read_print(void) {
+    HAL_ADC_Start(&hadc1);
+    printf("{plotter:%d}\n",HAL_ADC_GetValue(&hadc1)%11-5);
+}
 
 /* USER CODE END 1 */
 
