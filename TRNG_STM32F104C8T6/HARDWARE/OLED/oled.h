@@ -13,5 +13,5 @@ void OLED_On(void);
 void OLED_ShowNum(uint8_t x,uint8_t y,unsigned int num,uint8_t len,uint8_t size2,int mode);
 void OLED_ShowString(uint8_t x,uint8_t y,uint8_t *chr,uint8_t Char_Size,int mode);
 
-void Display1(void);
+void Display_welcome(void);
 #endif

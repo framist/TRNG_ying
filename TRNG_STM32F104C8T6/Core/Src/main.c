@@ -52,7 +52,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void connect_PC(void) {
+
+static void connect_PC(void) {
     OLED_Clear();
     
     OLED_ShowString(0,0,"Connect to PC...",16,0);
@@ -71,11 +72,11 @@ void connect_PC(void) {
     HAL_Delay(1000);
 }
 
-void welcome(void) {
-    Display1();
+static void welcome(void) {
+    Display_welcome();
     HAL_Delay(1000);
 }
-int init_entropy_ADC(){
+static int init_entropy_ADC(){
     OLED_ShowString(2, 2,  "ADC   ", 12, 1);
     HAL_Delay(100);
     return 1;
@@ -86,7 +87,7 @@ int init_entropy_ADC(){
  * 
  * @return int 1 存在
  */
-int init_entropy_imu901() {
+static int init_entropy_imu901() {
     int f = 0;
     imu901_init();							/* IMU901模块初始 */
     imu901_read_once();
@@ -107,7 +108,7 @@ int init_entropy_imu901() {
     return f;
 }
 
-int init_entropy_geiger(){
+static int init_entropy_geiger(){
     OLED_ShowString(82, 3, "Geiger", 12, 0); //Geiger
     HAL_Delay(1000);
     return 1;

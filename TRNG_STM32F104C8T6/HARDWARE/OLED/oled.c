@@ -24,7 +24,12 @@ void OLED_WR_DATA(uint8_t data)
 {
 	HAL_I2C_Mem_Write(&hi2c1, 0x78, 0x40, I2C_MEMADD_SIZE_8BIT, &data, 1, 0x100);
 }
-//初始化oled屏幕
+
+/**
+ * @brief 初始化oled屏幕
+ * 
+ * @param OLED_0_91 1:是0.91'OLED
+ */
 void OLED_Init(int OLED_0_91)
 {
 	HAL_Delay(200);
@@ -194,8 +199,7 @@ void OLED_ShowChar(uint8_t x, uint8_t y, uint8_t chr, uint8_t Char_Size, int mod
 }
 
 //显示字符串
-void OLED_ShowString(uint8_t x, uint8_t y, uint8_t *chr, uint8_t Char_Size, int mode)
-{
+void OLED_ShowString(uint8_t x, uint8_t y, uint8_t *chr, uint8_t Char_Size, int mode) {
 	unsigned char j = 0;
 	while (chr[j] != '\0') {
 		OLED_ShowChar(x, y, chr[j], Char_Size, mode);
@@ -209,8 +213,7 @@ void OLED_ShowString(uint8_t x, uint8_t y, uint8_t *chr, uint8_t Char_Size, int 
 }
 //显示汉字
 //hzk 用取模软件得出的数组
-void OLED_ShowCHinese1(uint8_t x, uint8_t y, uint8_t no)
-{
+void OLED_ShowCHinese1(uint8_t x, uint8_t y, uint8_t no) {
 	uint8_t t, adder = 0;
 	OLED_Set_Pos(x, y);
 	for (t = 0; t < 16; t++) {
@@ -223,8 +226,7 @@ void OLED_ShowCHinese1(uint8_t x, uint8_t y, uint8_t no)
 		adder += 1;
 	}
 }
-void OLED_ShowCHinese2(uint8_t x, uint8_t y, uint8_t no)
-{
+void OLED_ShowCHinese2(uint8_t x, uint8_t y, uint8_t no) {
 	uint8_t t, adder = 0;
 	OLED_Set_Pos(x, y);
 	for (t = 0; t < 16; t++) {
@@ -238,8 +240,7 @@ void OLED_ShowCHinese2(uint8_t x, uint8_t y, uint8_t no)
 	}
 }
 
-void Display1(void)
-{
+void Display_welcome(void) {
 	OLED_ShowCHinese1(0, 0, 0);
 	OLED_ShowCHinese1(16, 0, 1);
 	OLED_ShowCHinese1(32, 0, 2);
