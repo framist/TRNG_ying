@@ -96,7 +96,7 @@ static int init_entropy_imu901() {
 static int init_entropy_geiger(){
     // TODO
     OLED_ShowString(82, 3, "Geiger", 12, 0); //Geiger
-    HAL_Delay(1000);
+    
     return 1;
 }
 
@@ -162,20 +162,17 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    host_msg_wait();
+
     HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13); // 翻转LED
 
     ADC_read_print();
     
-    host_msg_wait();
-
-    // OLED_ShowNum(48,0,HAL_ADC_GetValue(&hadc1),4,16,0);
-
-    imu901_read_once();
     if(imu901Flag) {
+        imu901_read_once();
         imu901_print();
     }
 
-    HAL_Delay(1);
     
   }
   /* USER CODE END 3 */

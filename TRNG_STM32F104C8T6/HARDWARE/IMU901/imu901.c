@@ -336,30 +336,29 @@ uint8_t atkpReadReg(enum regTable reg, int16_t *data)
   */
 int imu901_init(void)
 {
-    int16_t data;
-    uint8_t f;
-    /**
-      *	 写入寄存器参数（测试）
-      *	 这里提供写入引用例子，用户可以在这写入一些默认参数，
-      *  如陀螺仪加速度量程、带宽、回传速率、PWM输出等。
-      */
-    atkpWriteReg(REG_GYROFSR, 3, 1);
-    atkpWriteReg(REG_ACCFSR, 1, 1);
-	atkpWriteReg(REG_SAVE, 0, 1); 	/* 发送保存参数至模块内部Flash，否则模块掉电不保存 */
+    // int16_t data;
+    // uint8_t f;
+    // /**
+    //   *	 写入寄存器参数（测试）
+    //   *	 这里提供写入引用例子，用户可以在这写入一些默认参数，
+    //   *  如陀螺仪加速度量程、带宽、回传速率、PWM输出等。
+    //   */
+    // atkpWriteReg(REG_GYROFSR, 3, 1);
+    // atkpWriteReg(REG_ACCFSR, 1, 1);
+	// atkpWriteReg(REG_SAVE, 0, 1); 	/* 发送保存参数至模块内部Flash，否则模块掉电不保存 */
 
-    /* 读出寄存器参数（测试） */
-    f = atkpReadReg(REG_GYROFSR, &data);
-    if(f == 0) return 0;
-    imu901Param.gyroFsr = data;
+    // /* 读出寄存器参数（测试） */
+    // atkpReadReg(REG_GYROFSR, &data);
+    // imu901Param.gyroFsr = data;
 
-    atkpReadReg(REG_ACCFSR, &data);
-    imu901Param.accFsr = data;
+    // atkpReadReg(REG_ACCFSR, &data);
+    // imu901Param.accFsr = data;
 
-    atkpReadReg(REG_GYROBW, &data);
-    imu901Param.gyroBW = data;
+    // atkpReadReg(REG_GYROBW, &data);
+    // imu901Param.gyroBW = data;
 
-    atkpReadReg(REG_ACCBW, &data);
-    imu901Param.accBW = data;
+    // atkpReadReg(REG_ACCBW, &data);
+    // imu901Param.accBW = data;
     return 1;
 }
 
@@ -385,6 +384,10 @@ void imu901_print(void) {
     printf("角速度[XYZ]: %-6.1f %-6.1f %-6.1f (°/s)\r\n", gyroAccData.fgyroD[0], gyroAccData.fgyroD[1], gyroAccData.fgyroD[2]);
     printf("磁场[XYZ]: %-6d %-6d %-6d (uT)\r\n", magData.mag[0], magData.mag[1], magData.mag[2]);
     printf("气压:    %-6dPa   %-6dcm\r\n", baroData.pressure, baroData.altitude);
+}
+
+void imu901_read_print(void) {
+    
 }
 
 /*******************************END OF FILE************************************/

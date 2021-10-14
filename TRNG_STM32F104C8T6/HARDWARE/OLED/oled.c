@@ -217,7 +217,7 @@ void OLED_ShowString(uint8_t x, uint8_t y, uint8_t *chr, uint8_t Char_Size, int 
 		x += Char_Size / 2;
 		if (x > 120) {
 			x = 0;
-			y += 2;
+			y += Char_Size == 16 ? 2 : 1;
 		}
 		j++;
 	}
@@ -252,6 +252,13 @@ void OLED_ShowCHinese2(uint8_t x, uint8_t y, uint8_t no) {
 }
 
 void Display_welcome(void) {
+	OLED_ShowString(0, 0, "init param:          ", 12, 0);
+	OLED_ShowString(0, 1, "1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7K", 12, 0);
+	HAL_Delay(100);
+	OLED_ShowString(0, 1, "sbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==", 12, 0);
+	OLED_Clear();
+
+
 	OLED_ShowCHinese1(0, 0, 0);
 	OLED_ShowCHinese1(16, 0, 1);
 	OLED_ShowCHinese1(32, 0, 2);
@@ -264,7 +271,10 @@ void Display_welcome(void) {
 	OLED_ShowString(0, 2, "ying ying ying ~", 16, 0);
 	//		OLED_ShowCHinese2(64,2,0);
 	//		OLED_ShowCHinese2(80,2,1);
-	//init param: 1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==
+	
+	HAL_Delay(1000);
+	
+
 }
 /**
  * @brief ”¿≤ª∑µªÿ
