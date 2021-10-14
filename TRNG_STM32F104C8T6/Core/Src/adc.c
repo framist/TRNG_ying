@@ -21,7 +21,7 @@
 #include "adc.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "stdio.h"
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc1;
@@ -37,7 +37,14 @@ void MX_ADC1_Init(void)
   ADC_ChannelConfTypeDef sConfig = {0};
 
   /* USER CODE BEGIN ADC1_Init 1 */
-
+/*
+ADC1_Handler.Init.DataAlign=ADC_DATAALIGN_RIGHT;             //右对齐
+ADC1_Handler.Init.ScanConvMode=ADC_SCAN_DISABLE;             //非扫描模式
+ADC1_Handler.Init.ContinuousConvMode=DISABLE;                //关闭连续转换
+ADC1_Handler.Init.NbrOfConversion=1;                         //只转换规则序列1 
+ADC1_Handler.Init.DiscontinuousConvMode=DISABLE;             //禁止不连续采样模式
+ADC1_Handler.Init.ExternalTrigConv=ADC_SOFTWARE_START;       //软件触发
+*/
   /* USER CODE END ADC1_Init 1 */
   /** Common config
   */

@@ -2,6 +2,11 @@
 
 项目构建中...
 
-![image-20211009122346656](README/image-20211009122346656.png)
 
-![image-20211009174211796](README/image-20211009174211796.png)
+
+
+
+## 下位机
+
+建议 VSCode 插件 [Keil Assistant - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=CL.keil-assistant)
+

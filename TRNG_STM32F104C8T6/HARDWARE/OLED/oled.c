@@ -1,7 +1,18 @@
+/**
+ * @file oled.c
+ * @author modificator: framist (framist@163.com)
+ * @brief 
+ * @version 0.1
+ * @date 2021-10-14
+ * 
+ * @copyright Copyright (c) 2021
+ * @TODO 待重构
+ */
+
 #include "./OLED/oled.h"
 #include "i2c.h"
 #include "./OLED/oledfont.h"
-/* framist */
+
 void OLED_WR_CMD(uint8_t cmd);
 void OLED_WR_DATA(uint8_t data);
 void OLED_ShowChar(uint8_t x, uint8_t y, uint8_t chr, uint8_t Char_Size, int mode);
@@ -250,7 +261,26 @@ void Display_welcome(void) {
 	OLED_ShowCHinese1(96, 0, 6);
 	OLED_ShowCHinese1(112, 0, 7);
 	//		OLED_ShowNum(34,2,2021,4,16);
-	OLED_ShowString(0, 2, "ying ying ying", 16, 0);
+	OLED_ShowString(0, 2, "ying ying ying ~", 16, 0);
 	//		OLED_ShowCHinese2(64,2,0);
 	//		OLED_ShowCHinese2(80,2,1);
+	//init param: 1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7Ksbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==
+}
+/**
+ * @brief 永不返回
+ * 
+ */
+void Display_bye(void) {
+	HAL_Delay(1000);
+	OLED_ShowString(0, 2, "   bye bye ~ ~  ", 16, 0);
+	while (1) ;
+}
+/**
+ * @brief 永不返回
+ * 
+ */
+void Display_reset(void) {
+	HAL_Delay(1000);
+	OLED_ShowString(0, 2, "you can RESET me", 16, 0);
+	while (1) ;
 }

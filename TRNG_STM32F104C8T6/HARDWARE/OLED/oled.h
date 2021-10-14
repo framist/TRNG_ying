@@ -14,4 +14,6 @@ void OLED_ShowNum(uint8_t x,uint8_t y,unsigned int num,uint8_t len,uint8_t size2
 void OLED_ShowString(uint8_t x,uint8_t y,uint8_t *chr,uint8_t Char_Size,int mode);
 
 void Display_welcome(void);
+void Display_bye(void);
+void Display_reset(void);
 #endif

@@ -801,6 +801,11 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\IMU901\ringbuffer.c</FilePath>
             </File>
+            <File>
+              <FileName>hostPC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\HOSTPC\hostPC.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

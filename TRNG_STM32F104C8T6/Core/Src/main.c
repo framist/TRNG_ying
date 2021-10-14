@@ -22,6 +22,7 @@
 /* USER CODE BEGIN Includes */
 #include "./OLED/oled.h"
 #include "./IMU901/imu901.h"
+#include "./HOSTPC/hostPC.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,30 +54,7 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-/**
- * @brief 连接PC
- * 
- * @return int 成功:0 ; 其他:阻塞
- */
-static int connect_PC(void) {
-    OLED_Clear();
-    
-    OLED_ShowString(0,0,"Connect to PC...",16,0);
-    int i;
 
-    while(1) {
-        if(scanf("%d",&i) != EOF ) break; // TODO Timeout
-    }
-    if(i==1) {
-        OLED_ShowString(0,2,"    OK : )",16,0);
-    }else {
-        OLED_ShowString(0,2,"  fault :(",16,0);
-        while(1);
-    }
-    printf("Connect:%d\n",i);
-    HAL_Delay(1000);
-    return 0;
-}
 
 static void welcome(void) {
     Display_welcome();
@@ -123,23 +101,7 @@ static int init_entropy_geiger(){
 }
 
 
-enum PC_MSG {
-    PC_MSG_NAK,         // Negative-Acknowledgment 无效消息，备用
-    PC_MSG_ACK,         // Acknowledgment OK
-    PC_MSG_STOP,        // 上位机主动终止
-    PC_MSG_PKC_ERROR,   // public-key Certificate 证书认证错误
-    PC_MSG_TRNG_ERROR,  // 随机数错误，如判断出现非随机现象
-    PC_MSG_PC_ERROR,    // 上位机错误
-};
 
-//串口1的停止等待协议
-static void usart1_stop_and_wait(){
-    int i = 0;
-    while (1) {
-        scanf("%d",&i);
-        if(i==1) break;
-    }
-}
 
 /* USER CODE END 0 */
 
@@ -180,7 +142,7 @@ int main(void)
   
   OLED_Init(1);         // 初始化OLED
   welcome();            //欢迎界面
-  connect_PC();         //连接 PC
+  host_connect();         //连接 PC
 
   //初始化熵源
   OLED_Clear();
@@ -204,7 +166,7 @@ int main(void)
 
     ADC_read_print();
     
-    usart1_stop_and_wait();
+    host_msg_wait();
 
     // OLED_ShowNum(48,0,HAL_ADC_GetValue(&hadc1),4,16,0);
 
