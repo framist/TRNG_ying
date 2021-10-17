@@ -21,12 +21,10 @@
  */
 static int _host_msg_analysis(enum HOST_MSG m) {
     switch (m) {
-
     case HOST_MSG_NULL      : 
         OLED_ShowString(0, 0, ":( msg time out ", 16, 0);
         break;
-    case HOST_MSG_ACK       :
-        
+    case HOST_MSG_ACK       :      
         return 1;
         //break;
     case HOST_MSG_NAK       :

@@ -146,7 +146,7 @@ int main(void)
 //  }
   OLED_Init(1);         // 初始化OLED
   welcome();            //欢迎界面
-  //host_connect();         //连接 PC
+  host_connect();         //连接 PC
 
   //初始化熵源
   OLED_Clear();
