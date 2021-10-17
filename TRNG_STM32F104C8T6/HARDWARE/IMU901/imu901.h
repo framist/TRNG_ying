@@ -88,8 +88,7 @@ enum regTable
 #define ATKP_MAX_DATA_SIZE 28
 
 /*通讯数据结构*/
-typedef struct
-{
+typedef struct {
     uint8_t startByte1;
     uint8_t startByte2;
     uint8_t msgID;
@@ -100,23 +99,19 @@ typedef struct
 
 
 /* 姿态角数据结构体 */
-typedef struct
-{
+typedef struct {
     float roll;
     float pitch;
     float yaw;
 } attitude_t;
 
 /* 四元数数据结构体 */
-typedef struct
-{
+typedef struct {
     float q0, q1, q2, q3;
-
 } quaternion_t;
 
 /* 陀螺仪加速度数据结构体 */
-typedef struct
-{
+typedef struct {
     int16_t gyro[3]; 	/*!< 陀螺仪原始数据 */
     int16_t acc[3];		/*!< 加速度原始数据 */
     float 	fgyroD[3];	/*!< 陀螺仪转速°/S */
@@ -125,15 +120,13 @@ typedef struct
 
 
 /* 磁力计数据结构 */
-typedef struct
-{
+typedef struct {
     int16_t mag[3];		/*!< 磁场数据 */
     float  	temp;		/*!< 磁力计温度 */
 } mag_t;
 
 /* 气压计数据结构 */
-typedef struct
-{
+typedef struct {
     int32_t pressure;	/*!< 气压值Pa */
     int32_t altitude;	/*!< 海拔高度cm */
     float  	temp;		/*!< 气压计温度 */
@@ -141,16 +134,14 @@ typedef struct
 
 
 /* 端口数据结构 */
-typedef struct
-{
+typedef struct {
     uint16_t d03data[4];
 } ioStatus_t;
 
 
 
 /* 部分寄存器参数 */
-typedef struct
-{
+typedef struct {
     uint8_t gyroFsr;	/*!< REG_GYROFSR寄存器的值 */
 	uint8_t accFsr;
 	uint8_t gyroBW;
@@ -187,6 +178,7 @@ uint8_t atkpReadReg(enum regTable reg, int16_t *data);
 
 void imu901_read_once(void);
 void imu901_print(void);
+void imu901_read_print(void);
 
 #endif /* _IMU901_H_ */
 

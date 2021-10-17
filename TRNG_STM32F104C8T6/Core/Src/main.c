@@ -74,6 +74,7 @@ static int init_entropy_ADC(){
  */
 static int init_entropy_imu901() {
     int f = 0;
+    
     imu901_init();							/* IMU901模块初始 */
     imu901_read_once();
     if (baroData.pressure != 0){
@@ -139,10 +140,13 @@ int main(void)
   MX_ADC1_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-  
+//  while(1){
+//    HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
+//      HAL_Delay(100);
+//  }
   OLED_Init(1);         // 初始化OLED
   welcome();            //欢迎界面
-  host_connect();         //连接 PC
+  //host_connect();         //连接 PC
 
   //初始化熵源
   OLED_Clear();
@@ -169,8 +173,7 @@ int main(void)
     ADC_read_print();
     
     if(imu901Flag) {
-        imu901_read_once();
-        imu901_print();
+        imu901_read_print();
     }
 
     

@@ -153,8 +153,7 @@ uint8_t imu901_unpack(uint8_t ch)
   * @param  packet: atkp数据包
   * @retval None
   */
-void atkpParsing(atkp_t *packet)
-{
+void atkpParsing(atkp_t *packet) {
     /* 姿态角 */
     if (packet->msgID == UP_ATTITUDE) {
         int16_t data = (int16_t) (packet->data[1] << 8) | packet->data[0];
@@ -336,29 +335,37 @@ uint8_t atkpReadReg(enum regTable reg, int16_t *data)
   */
 int imu901_init(void)
 {
-    // int16_t data;
-    // uint8_t f;
-    // /**
-    //   *	 写入寄存器参数（测试）
-    //   *	 这里提供写入引用例子，用户可以在这写入一些默认参数，
-    //   *  如陀螺仪加速度量程、带宽、回传速率、PWM输出等。
-    //   */
-    // atkpWriteReg(REG_GYROFSR, 3, 1);
-    // atkpWriteReg(REG_ACCFSR, 1, 1);
-	// atkpWriteReg(REG_SAVE, 0, 1); 	/* 发送保存参数至模块内部Flash，否则模块掉电不保存 */
+    int16_t data;
+    /**
+      *	 写入寄存器参数（测试）
+      *	 这里提供写入引用例子，用户可以在这写入一些默认参数，
+      *  如陀螺仪加速度量程、带宽、回传速率、PWM输出等。
+      */
+    //量程都为最小
+    atkpWriteReg(REG_GYROFSR, 0, 1); 
+    atkpWriteReg(REG_ACCFSR, 0, 1);
+    //D端口都为模拟输入
+    atkpWriteReg(REG_D0MODE, 0, 1);
+    atkpWriteReg(REG_D1MODE, 0, 1);
+    atkpWriteReg(REG_D2MODE, 0, 1);
+    atkpWriteReg(REG_D3MODE, 0, 1);
+    //回传速率50hz (但是磁力计最快10Hz，气压计20Hz 先不管)
+    atkpWriteReg(REG_UPRATE, 4, 1);
+    //发送保存参数至模块内部Flash，否则模块掉电不保存
+	atkpWriteReg(REG_SAVE, 0, 1); 	
 
-    // /* 读出寄存器参数（测试） */
-    // atkpReadReg(REG_GYROFSR, &data);
-    // imu901Param.gyroFsr = data;
+    /* 读出寄存器参数（测试） */
+    atkpReadReg(REG_GYROFSR, &data);
+    imu901Param.gyroFsr = data;
 
-    // atkpReadReg(REG_ACCFSR, &data);
-    // imu901Param.accFsr = data;
+    atkpReadReg(REG_ACCFSR, &data);
+    imu901Param.accFsr = data;
 
-    // atkpReadReg(REG_GYROBW, &data);
-    // imu901Param.gyroBW = data;
+    atkpReadReg(REG_GYROBW, &data);
+    imu901Param.gyroBW = data;
 
-    // atkpReadReg(REG_ACCBW, &data);
-    // imu901Param.accBW = data;
+    atkpReadReg(REG_ACCBW, &data);
+    imu901Param.accBW = data;
     return 1;
 }
 
@@ -367,13 +374,13 @@ void imu901_read_once(void){
     uint8_t ch;
     while (imu901_uart_receive(&ch, 1)) /*!< 获取串口fifo一个字节 */
     {
-      if (imu901_unpack(ch)) /*!< 解析出有效数据包 */
-      {
-        if (rxPacket.startByte2 == UP_BYTE2) /*!< 主动上传的数据包 */
+        if (imu901_unpack(ch)) /*!< 解析出有效数据包 */
         {
-          atkpParsing(&rxPacket);
+            if (rxPacket.startByte2 == UP_BYTE2) /*!< 主动上传的数据包 */
+            {
+                atkpParsing(&rxPacket);
+            }
         }
-      }
     }
 }
 
@@ -386,8 +393,81 @@ void imu901_print(void) {
     printf("气压:    %-6dPa   %-6dcm\r\n", baroData.pressure, baroData.altitude);
 }
 
+
+static uint32_t Entropy; //一次32bit熵
+static void _get_entropy(atkp_t *packet) {
+    int16_t data;
+
+    /* 姿态角 3*2 bit */
+    if (packet->msgID == UP_ATTITUDE) {
+        data = (int16_t) (packet->data[1] << 8) | packet->data[0];
+        Entropy = Entropy << 2 | (data & 0x0003);
+
+        data = (int16_t) (packet->data[3] << 8) | packet->data[2];
+        Entropy = Entropy << 2 | (data & 0x0003);
+
+        data = (int16_t) (packet->data[5] << 8) | packet->data[4];
+        Entropy = Entropy << 2 | (data & 0x0003);
+    }
+
+    /* 四元数 不使用 */
+
+    /* 陀螺仪加速度数据 6*2 bit */
+    else if (packet->msgID == UP_GYROACCDATA) {
+
+        Entropy = Entropy << 2 | (packet->data[0] & 0x0003);
+        Entropy = Entropy << 2 | (packet->data[2] & 0x0003);
+        Entropy = Entropy << 2 | (packet->data[4] & 0x0003);
+
+        Entropy = Entropy << 2 | (packet->data[6] & 0x0003);
+        Entropy = Entropy << 2 | (packet->data[8] & 0x0003);
+        Entropy = Entropy << 2 | (packet->data[10] & 0x0003);
+    }
+
+    /* 磁场数据 3bit 温度舍弃 */
+    else if (packet->msgID == UP_MAGDATA) {
+        Entropy = Entropy << 1 | (packet->data[0] & 0x0001);
+        Entropy = Entropy << 1 | (packet->data[2] & 0x0001);
+        Entropy = Entropy << 1 | (packet->data[4] & 0x0001);
+
+        // data = (int16_t) (packet->data[7] << 8) | packet->data[6];
+        // magData.temp = (float) data / 100;
+    }
+
+    /* 气压计数据 气压舍弃 2bit */
+    else if (packet->msgID == UP_BARODATA) {
+        // baroData.pressure = (int32_t) (packet->data[3] << 24) | (packet->data[2] << 16) |
+        //                     (packet->data[1] << 8) | packet->data[0];
+
+        Entropy = Entropy << 1 | (packet->data[4] & 0x0001);
+
+        // 温度
+        Entropy = Entropy << 1 | (packet->data[8] & 0x0001);
+
+    }
+
+    /* 端口状态数据 需配置为模拟输入 3 bit */
+    else if (packet->msgID == UP_D03DATA) {
+        Entropy = Entropy << 1 | (packet->data[0] & 0x0001);
+        Entropy = Entropy << 1 | (packet->data[2] & 0x0001);
+        Entropy = Entropy << 1 | (packet->data[4] & 0x0001);
+        // Entropy = Entropy << 1 | (packet->data[6] & 0x0001);
+    }
+}
+
 void imu901_read_print(void) {
-    
+    uint8_t ch;
+    while (imu901_uart_receive(&ch, 1)) /*!< 获取串口fifo一个字节 */
+    {
+        if (imu901_unpack(ch)) /*!< 解析出有效数据包 */
+        {
+            if (rxPacket.startByte2 == UP_BYTE2) /*!< 主动上传的数据包 */
+            {
+                _get_entropy(&rxPacket);
+            }
+        }
+    }
+    printf("%08x\n",Entropy);
 }
 
 /*******************************END OF FILE************************************/
