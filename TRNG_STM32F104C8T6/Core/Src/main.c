@@ -5,7 +5,8 @@
   * @brief          : TRNG 项目     嘤嘤嘤 团队
   * @author         : framist
   ******************************************************************************
-  * @attention 项目构建中...
+  * @attention 项目构建中...项目开源地址：https://github.com/framist/TRNG_ying 
+  * 
   *            使用 STM32F103C8T6
   *
   ******************************************************************************
@@ -170,7 +171,7 @@ int main(void)
 
     ADC_read_print();
     host_msg_wait();
-    
+
     if(imu901Flag) {
         imu901_read_print();
         host_msg_wait();

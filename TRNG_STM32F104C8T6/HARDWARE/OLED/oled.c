@@ -258,16 +258,18 @@ void Display_welcome(void) {
 	OLED_ShowString(0, 1, "sbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==", 12, 0);
 	OLED_Clear();
 
+	// //显示西安电子科技大学
+	// OLED_ShowCHinese1(0, 0, 0);
+	// OLED_ShowCHinese1(16, 0, 1);
+	// OLED_ShowCHinese1(32, 0, 2);
+	// OLED_ShowCHinese1(48, 0, 3);
+	// OLED_ShowCHinese1(64, 0, 4);
+	// OLED_ShowCHinese1(80, 0, 5);
+	// OLED_ShowCHinese1(96, 0, 6);
+	// OLED_ShowCHinese1(112, 0, 7);
+	
 
-	OLED_ShowCHinese1(0, 0, 0);
-	OLED_ShowCHinese1(16, 0, 1);
-	OLED_ShowCHinese1(32, 0, 2);
-	OLED_ShowCHinese1(48, 0, 3);
-	OLED_ShowCHinese1(64, 0, 4);
-	OLED_ShowCHinese1(80, 0, 5);
-	OLED_ShowCHinese1(96, 0, 6);
-	OLED_ShowCHinese1(112, 0, 7);
-	//		OLED_ShowNum(34,2,2021,4,16);
+	OLED_ShowString(0, 0, "   [ T R N G ]  ", 16, 0);
 	OLED_ShowString(0, 2, "ying ying ying ~", 16, 0);
 	//		OLED_ShowCHinese2(64,2,0);
 	//		OLED_ShowCHinese2(80,2,1);

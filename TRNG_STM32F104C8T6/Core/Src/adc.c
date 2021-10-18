@@ -22,6 +22,7 @@
 
 /* USER CODE BEGIN 0 */
 #include "stdio.h"
+#include "usart.h"
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc1;
@@ -127,6 +128,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 void ADC_read_print(void) {
     int i = 0;
     uint32_t Entropy = 0;
+
     HAL_ADC_Start(&hadc1);
 
     // 每次2bit熵
@@ -137,7 +139,12 @@ void ADC_read_print(void) {
         //printf("{plotter:%d}\n",HAL_ADC_GetValue(&hadc1)%11-5);
         HAL_Delay(1);
     }
-    printf("%08x\n",Entropy);
+    // printf("%08x\n",Entropy);
+
+    uint8_t * ch = (uint8_t *) & Entropy;
+    uint8_t chEnd = '\0';
+    HAL_UART_Transmit(&huart1, ch, 4, 0xffff);
+    HAL_UART_Transmit(&huart1, &chEnd, 1, 0xffff);
     
 }
 

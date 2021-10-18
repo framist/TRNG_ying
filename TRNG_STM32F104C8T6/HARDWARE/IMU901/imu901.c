@@ -467,7 +467,11 @@ void imu901_read_print(void) {
             }
         }
     }
-    printf("%08x\n",Entropy);
+    // printf("%08x\n",Entropy);
+    uint8_t * ch1 = (uint8_t *) & Entropy;
+    uint8_t chEnd = '\0';
+    HAL_UART_Transmit(&huart1, ch1, 4, 0xffff);
+    HAL_UART_Transmit(&huart1, &chEnd, 1, 0xffff);
 }
 
 /*******************************END OF FILE************************************/
