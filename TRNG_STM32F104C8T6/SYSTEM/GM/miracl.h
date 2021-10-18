@@ -39,7 +39,7 @@ the CertiVox MIRACL Crypto SDK with a closed source product.               *
  *   main MIRACL header - miracl.h.
  */
 
-#include "mirdef.h"
+#include "./GM/mirdef.h"
 
 /* Some modifiable defaults... */
 

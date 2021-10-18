@@ -12,6 +12,7 @@
 #include "./HOSTPC/hostPC.h"
 #include "./OLED/oled.h"
 #include <stdio.h>
+#include "./GM/sm2.h"
 
 /**
  * @brief 
@@ -87,6 +88,7 @@ int host_connect(void) {
     OLED_ShowString(0,0,"Connect to PC...",16,0);
 
     // TODO 认证
+    //sm2_encrypt_test();
 
     //串口1的停止等待协议
     while (m == HOST_MSG_NULL) {

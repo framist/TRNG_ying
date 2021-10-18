@@ -156,10 +156,11 @@ int main(int argc , char* argv[])
 
     if(slave_connect(usart)==-1) return -1;
     slave_write(HOST_MSG_ACK);
-    sleep(10);
+    // sleep(10);
     for(i = 0; i<10; i++) {
-        slave_write(HOST_MSG_ACK);
+		//先读再ACK
         slave_read(buffer);
+        slave_write(HOST_MSG_ACK);
         printf("read: [%s]daer\n",buffer);
         printf("e:%u\n",slave_ntropy_solve(buffer));
     }

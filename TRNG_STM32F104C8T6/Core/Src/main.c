@@ -23,6 +23,7 @@
 #include "./OLED/oled.h"
 #include "./IMU901/imu901.h"
 #include "./HOSTPC/hostPC.h"
+#include "./GM/sm2.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -140,10 +141,7 @@ int main(void)
   MX_ADC1_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-//  while(1){
-//    HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
-//      HAL_Delay(100);
-//  }
+  
   OLED_Init(1);         // 初始化OLED
   welcome();            //欢迎界面
   host_connect();         //连接 PC
@@ -166,14 +164,16 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-    host_msg_wait();
+    
 
     HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13); // 翻转LED
 
     ADC_read_print();
+    host_msg_wait();
     
     if(imu901Flag) {
         imu901_read_print();
+        host_msg_wait();
     }
 
     
