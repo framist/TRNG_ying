@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F103xB</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\HARDWARE\</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\HARDWARE\;..\SYSTEM</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -805,6 +805,26 @@
               <FileName>hostPC.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\HOSTPC\hostPC.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Application/User/SYSTEM</GroupName>
+          <Files>
+            <File>
+              <FileName>sm2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\GM\sm2.c</FilePath>
+            </File>
+            <File>
+              <FileName>sm3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\GM\sm3.c</FilePath>
+            </File>
+            <File>
+              <FileName>miracl.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\SYSTEM\GM\miracl.lib</FilePath>
             </File>
           </Files>
         </Group>

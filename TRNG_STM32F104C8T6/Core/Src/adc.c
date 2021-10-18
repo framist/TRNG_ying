@@ -129,7 +129,7 @@ void ADC_read_print(void) {
     uint32_t Entropy = 0;
     HAL_ADC_Start(&hadc1);
 
-    // 每次2bit
+    // 每次2bit熵
     for (i = 0; i < 32/2; i++) {
         HAL_ADC_Start(&hadc1);
         
