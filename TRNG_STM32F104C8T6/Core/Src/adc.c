@@ -132,12 +132,12 @@ void ADC_read_print(void) {
     HAL_ADC_Start(&hadc1);
 
     // 每次2bit熵
-    for (i = 0; i < 32/2; i++) {
+    for (i = 0; i < 32/4; i++) {
         HAL_ADC_Start(&hadc1);
         
-        Entropy = Entropy << 2 | (HAL_ADC_GetValue(&hadc1) & 0x00000003);
-        //printf("{plotter:%d}\n",HAL_ADC_GetValue(&hadc1)%11-5);
-        HAL_Delay(1);
+        Entropy = Entropy << 2 | (HAL_ADC_GetValue(&hadc1) & 0x0000000F);
+        // printf("{plotter:%d}\n",HAL_ADC_GetValue(&hadc1)%255-127);
+        // HAL_Delay(1);
     }
     // printf("%08x\n",Entropy);
 
