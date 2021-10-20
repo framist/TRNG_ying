@@ -128,14 +128,11 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 void ADC_read_print(void) {
     int i = 0;
     uint32_t Entropy = 0;
-
-    HAL_ADC_Start(&hadc1);
-
-    // 每次2bit熵
+    // 每次4bit熵
     for (i = 0; i < 32/4; i++) {
         HAL_ADC_Start(&hadc1);
         
-        Entropy = Entropy << 2 | (HAL_ADC_GetValue(&hadc1) & 0x0000000F);
+        Entropy = Entropy << 4 | (HAL_ADC_GetValue(&hadc1) & 0x0000000F);
         // printf("{plotter:%d}\n",HAL_ADC_GetValue(&hadc1)%255-127);
         // HAL_Delay(1);
     }

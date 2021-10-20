@@ -90,7 +90,7 @@ static int init_entropy_imu901() {
     OLED_ShowString(2, 3,  "Mag.*3", 12, f);  //magnetometer
     HAL_Delay(100);
     OLED_ShowString(42, 3, "Gyr.*3", 12, f); //gyroscope
-    HAL_Delay(1000);
+    HAL_Delay(200);
     return f;
 }
 
