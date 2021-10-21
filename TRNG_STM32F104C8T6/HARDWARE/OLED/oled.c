@@ -259,7 +259,7 @@ void Display_welcome(void) {
     HAL_Delay(100);
 	OLED_Clear();
 
-	// //显示西安电子科技大学
+	// //显示
 	// OLED_ShowCHinese1(0, 0, 0);
 	// OLED_ShowCHinese1(16, 0, 1);
 	// OLED_ShowCHinese1(32, 0, 2);

@@ -104,14 +104,14 @@ int host_connect(void) {
     }
 
     // TODO 认证
-    // sm2_encrypt_test();
-    // if(my_sm2_decrypt()==1){
-    //     scanf("%u",&i);
-    //     m = (enum HOST_MSG)i;
-    //     host_msg_analysis(m);
-    // } else {
-    //     host_msg_analysis(HOST_MSG_PKC_ERROR);
-    // }
+    sm2_encrypt_test();
+    if(my_sm2_decrypt()==1){
+        scanf("%u",&i);
+        m = (enum HOST_MSG)i;
+        host_msg_analysis(m);
+    } else {
+        host_msg_analysis(HOST_MSG_PKC_ERROR);
+    }
 
     
     HAL_Delay(1000);

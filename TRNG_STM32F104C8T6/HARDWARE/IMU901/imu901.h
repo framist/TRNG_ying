@@ -178,7 +178,7 @@ uint8_t atkpReadReg(enum regTable reg, int16_t *data);
 
 void imu901_read_once(void);
 void imu901_print(void);
-uint8_t imu901_read_print(void);
+uint8_t imu901_read_Entropy(void);
 
 #endif /* _IMU901_H_ */
 

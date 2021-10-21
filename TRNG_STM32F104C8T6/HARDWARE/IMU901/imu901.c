@@ -456,7 +456,7 @@ static void _get_entropy(atkp_t *packet) {
     }
 }
 
-uint8_t imu901_read_print(void) {
+uint8_t imu901_read_Entropy(void) {
     uint8_t ch;
     while (imu901_uart_receive(&ch, 1)) /*!< 获取串口fifo一个字节 */
     {

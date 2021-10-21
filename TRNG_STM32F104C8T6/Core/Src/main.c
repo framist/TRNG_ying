@@ -115,7 +115,6 @@ static int init_entropy_geiger(){
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  int i;
   int imu901Flag = 0;
   uint32_t e_old = 0; //用于异或输出
   /* USER CODE END 1 */
@@ -174,7 +173,7 @@ int main(void)
     host_msg_wait();
 
     if(imu901Flag) {
-        e_old = imu901_read_print();
+        e_old = imu901_read_Entropy();
         // host_msg_wait();
     }
 

@@ -134,7 +134,7 @@ void ADC_read_print(uint32_t e_old) {
         HAL_ADC_Start(&hadc1);
         
         Entropy = Entropy << 4 | (HAL_ADC_GetValue(&hadc1) & 0x0000000F);
-        // printf("{plotter:%d}\n",HAL_ADC_GetValue(&hadc1)%255-127);
+        // printf("%f,",(float)HAL_ADC_GetValue(&hadc1)/4095*3.3f);
         // HAL_Delay(1);
     }
     // printf("%08x\n",Entropy);
