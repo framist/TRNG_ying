@@ -23,6 +23,7 @@
 /* USER CODE BEGIN 0 */
 #include "stdio.h"
 #include "usart.h"
+#include "./HOSTPC/hostPC.h"
 /* USER CODE END 0 */
 
 ADC_HandleTypeDef hadc1;
@@ -137,7 +138,9 @@ void ADC_read_print(uint32_t e_old) {
         // HAL_Delay(1);
     }
     // printf("%08x\n",Entropy);
-
+    if(Entropy==0 || Entropy == UINT32_MAX){
+        host_msg_analysis(HOST_MSG_TRNG_ERROR);
+    }
     Entropy ^= e_old; //异或后输出
     uint8_t * ch = (uint8_t *) & Entropy;
     uint8_t chEnd = '\0';

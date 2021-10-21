@@ -27,6 +27,7 @@
 
 #include "./IMU901/imu901.h"
 #include "usart.h"
+#include "./HOSTPC/hostPC.h"
 
 
 
@@ -468,6 +469,9 @@ uint8_t imu901_read_print(void) {
         }
     }
     // printf("%08x\n",Entropy);
+    if(Entropy==0 || Entropy == UINT32_MAX){
+        host_msg_analysis(HOST_MSG_TRNG_ERROR);
+    }
     return Entropy;
     // uint8_t * ch1 = (uint8_t *) & Entropy;
     // uint8_t chEnd = '\0';

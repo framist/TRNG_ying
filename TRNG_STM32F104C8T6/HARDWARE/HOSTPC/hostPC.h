@@ -16,6 +16,7 @@ enum HOST_MSG {
 
 enum HOST_MSG host_msg_wait(void);
 int host_connect(void);
+int host_msg_analysis(enum HOST_MSG m);
 
 #endif /* _HOSTPC_H_ */
 

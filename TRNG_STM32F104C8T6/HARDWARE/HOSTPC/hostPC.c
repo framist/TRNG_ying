@@ -20,7 +20,7 @@
  * @param m 
  * @return int 成功:1 ; 其他:阻塞
  */
-static int _host_msg_analysis(enum HOST_MSG m) {
+int host_msg_analysis(enum HOST_MSG m) {
     switch (m) {
     case HOST_MSG_NULL      : 
         OLED_ShowString(0, 0, ":( msg time out ", 16, 0);
@@ -69,7 +69,7 @@ enum HOST_MSG host_msg_wait() {
     scanf("%u",&i);
     m = (enum HOST_MSG)i;
 
-    _host_msg_analysis(m);
+    host_msg_analysis(m);
 
     return m;
 
@@ -108,9 +108,9 @@ int host_connect(void) {
     // if(my_sm2_decrypt()==1){
     //     scanf("%u",&i);
     //     m = (enum HOST_MSG)i;
-    //     _host_msg_analysis(m);
+    //     host_msg_analysis(m);
     // } else {
-    //     _host_msg_analysis(HOST_MSG_PKC_ERROR);
+    //     host_msg_analysis(HOST_MSG_PKC_ERROR);
     // }
 
     
