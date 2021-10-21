@@ -125,7 +125,7 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
 
 /* USER CODE BEGIN 1 */
 
-void ADC_read_print(void) {
+void ADC_read_print(uint32_t e_old) {
     int i = 0;
     uint32_t Entropy = 0;
     // 每次4bit熵
@@ -138,6 +138,7 @@ void ADC_read_print(void) {
     }
     // printf("%08x\n",Entropy);
 
+    Entropy ^= e_old; //异或后输出
     uint8_t * ch = (uint8_t *) & Entropy;
     uint8_t chEnd = '\0';
     HAL_UART_Transmit(&huart1, ch, 4, 0xffff);

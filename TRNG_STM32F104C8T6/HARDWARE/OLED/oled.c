@@ -256,6 +256,7 @@ void Display_welcome(void) {
 	OLED_ShowString(0, 1, "1LTKvNaux7CjrNHJ09C0y87Eo7/Rrbu3zfm4tKOsus7K", 12, 0);
 	HAL_Delay(100);
 	OLED_ShowString(0, 1, "sbb41rmjv9a5zqrWucv51rmjrLTLzsTT1rrOtOajvw==", 12, 0);
+    HAL_Delay(100);
 	OLED_Clear();
 
 	// //显示西安电子科技大学
@@ -274,7 +275,7 @@ void Display_welcome(void) {
 	//		OLED_ShowCHinese2(64,2,0);
 	//		OLED_ShowCHinese2(80,2,1);
 	
-	HAL_Delay(1000);
+	HAL_Delay(800);
 	
 
 }

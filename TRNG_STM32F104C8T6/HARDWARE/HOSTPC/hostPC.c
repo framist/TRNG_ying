@@ -83,12 +83,12 @@ enum HOST_MSG host_msg_wait() {
 int host_connect(void) {
     enum HOST_MSG m = HOST_MSG_NULL;
     uint32_t i;
+    
+
     OLED_Clear();
     
     OLED_ShowString(0,0,"Connect to PC...",16,0);
 
-    // TODO 认证
-    sm2_encrypt_test();
 
     //串口1的停止等待协议
     while (m == HOST_MSG_NULL) {
@@ -102,6 +102,17 @@ int host_connect(void) {
         OLED_ShowString(0,2,"  fault :(",16,0);
         while(1);
     }
+
+    // TODO 认证
+    // sm2_encrypt_test();
+    // if(my_sm2_decrypt()==1){
+    //     scanf("%u",&i);
+    //     m = (enum HOST_MSG)i;
+    //     _host_msg_analysis(m);
+    // } else {
+    //     _host_msg_analysis(HOST_MSG_PKC_ERROR);
+    // }
+
     
     HAL_Delay(1000);
     return 0;

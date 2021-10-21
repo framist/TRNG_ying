@@ -40,7 +40,7 @@ extern ADC_HandleTypeDef hadc1;
 void MX_ADC1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void ADC_read_print(void);
+void ADC_read_print(uint32_t e_old);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

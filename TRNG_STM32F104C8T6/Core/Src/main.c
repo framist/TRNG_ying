@@ -5,7 +5,9 @@
   * @brief          : TRNG 项目     嘤嘤嘤 团队
   * @author         : framist
   ******************************************************************************
-  * @attention 项目构建中...项目开源地址：https://github.com/framist/TRNG_ying 
+  * @attention 项目构建中...请时刻关注更新！
+  *            项目开源地址：https://github.com/framist/TRNG_ying
+  *            
   * 
   *            使用 STM32F103C8T6
   *
@@ -115,6 +117,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
   int i;
   int imu901Flag = 0;
+  uint32_t e_old = 0; //用于异或输出
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -167,12 +170,12 @@ int main(void)
 
     HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13); // 翻转LED
 
-    ADC_read_print();
+    ADC_read_print(e_old);
     host_msg_wait();
 
     if(imu901Flag) {
-        imu901_read_print();
-        host_msg_wait();
+        e_old = imu901_read_print();
+        // host_msg_wait();
     }
 
     
