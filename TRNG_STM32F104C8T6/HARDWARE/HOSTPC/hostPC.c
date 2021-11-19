@@ -88,7 +88,7 @@ int host_connect(void) {
     OLED_Clear();
     
     OLED_ShowString(0,0,"Connect to PC...",16,0);
-
+    //printf("hi!\n");
 
     //串口1的停止等待协议
     while (m == HOST_MSG_NULL) {
@@ -104,14 +104,14 @@ int host_connect(void) {
     }
 
     // TODO 认证
-    sm2_encrypt_test();
-    if(my_sm2_decrypt()==1){
-        scanf("%u",&i);
-        m = (enum HOST_MSG)i;
-        host_msg_analysis(m);
-    } else {
-        host_msg_analysis(HOST_MSG_PKC_ERROR);
-    }
+//    sm2_encrypt_test();
+//    if(my_sm2_decrypt()==1){
+//        scanf("%u",&i);
+//        m = (enum HOST_MSG)i;
+//        host_msg_analysis(m);
+//    } else {
+//        host_msg_analysis(HOST_MSG_PKC_ERROR);
+//    }
 
     
     HAL_Delay(1000);

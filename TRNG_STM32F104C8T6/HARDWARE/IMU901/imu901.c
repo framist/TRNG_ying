@@ -395,7 +395,8 @@ void imu901_print(void) {
 }
 
 
-static uint32_t Entropy; //一次32bit熵
+static volatile uint32_t Entropy; //一次32bit熵
+static volatile uint32_t dataPrint; 
 static void _get_entropy(atkp_t *packet) {
     int16_t data;
 
@@ -425,38 +426,39 @@ static void _get_entropy(atkp_t *packet) {
         Entropy = Entropy << 2 | (packet->data[10] & 0x0003);
     }
 
-    /* 磁场数据 3bit 温度舍弃 */
+    /* 磁场数据 2*3bit 温度舍弃 */
     else if (packet->msgID == UP_MAGDATA) {
-        Entropy = Entropy << 1 | (packet->data[0] & 0x0001);
-        Entropy = Entropy << 1 | (packet->data[2] & 0x0001);
-        Entropy = Entropy << 1 | (packet->data[4] & 0x0001);
-
+        Entropy = Entropy << 2 | (packet->data[0] & 0x0003);
+        Entropy = Entropy << 2 | (packet->data[2] & 0x0003);
+        Entropy = Entropy << 2 | (packet->data[4] & 0x0003);
+        // dataPrint = (int16_t) (packet->data[1] << 8) | packet->data[0];
         // data = (int16_t) (packet->data[7] << 8) | packet->data[6];
         // magData.temp = (float) data / 100;
     }
 
-    /* 气压计数据 气压舍弃 2bit */
+    /* 气压计数据 气压舍弃 2*2bit */
     else if (packet->msgID == UP_BARODATA) {
-        // baroData.pressure = (int32_t) (packet->data[3] << 24) | (packet->data[2] << 16) |
+        // dataPrint = (int32_t) (packet->data[3] << 24) | (packet->data[2] << 16) |
         //                     (packet->data[1] << 8) | packet->data[0];
-
-        Entropy = Entropy << 1 | (packet->data[4] & 0x0001);
-
+        // 海拔高度
+        Entropy = Entropy << 2 | (packet->data[4] & 0x0003);
+        // dataPrint = (int32_t) (packet->data[7] << 24) | (packet->data[6] << 16) |
+        //                     (packet->data[5] << 8) | packet->data[4];
         // 温度
-        Entropy = Entropy << 1 | (packet->data[8] & 0x0001);
-
+        Entropy = Entropy << 2 | (packet->data[8] & 0x0003);
+        //dataPrint = (int16_t) (packet->data[9] << 8) | packet->data[8];
     }
 
-    /* 端口状态数据 需配置为模拟输入 3 bit */
+    /* 端口状态数据 需配置为模拟输入 4 bit */
     else if (packet->msgID == UP_D03DATA) {
         Entropy = Entropy << 1 | (packet->data[0] & 0x0001);
         Entropy = Entropy << 1 | (packet->data[2] & 0x0001);
         Entropy = Entropy << 1 | (packet->data[4] & 0x0001);
-        // Entropy = Entropy << 1 | (packet->data[6] & 0x0001);
+        Entropy = Entropy << 1 | (packet->data[6] & 0x0001);
     }
 }
 
-uint8_t imu901_read_Entropy(void) {
+uint32_t imu901_read_Entropy(void) {
     uint8_t ch;
     while (imu901_uart_receive(&ch, 1)) /*!< 获取串口fifo一个字节 */
     {
@@ -477,6 +479,7 @@ uint8_t imu901_read_Entropy(void) {
     // uint8_t chEnd = '\0';
     // HAL_UART_Transmit(&huart1, ch1, 4, 0xffff);
     // HAL_UART_Transmit(&huart1, &chEnd, 1, 0xffff);
+    // printf("%08X\n",dataPrint);
 }
 
 /*******************************END OF FILE************************************/

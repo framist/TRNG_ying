@@ -8,6 +8,10 @@
   * @attention 项目构建中...请时刻关注更新！
   *            项目开源地址：https://github.com/framist/TRNG_ying
   *            
+  *            如果你有什么好的建议或者更好的功能，请告诉我，我会添加的！
+  * 
+  *            IO管脚说明：
+  *           
   * 
   *            使用 STM32F103C8T6
   *
