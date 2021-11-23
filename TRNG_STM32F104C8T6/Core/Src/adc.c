@@ -135,10 +135,10 @@ void ADC_read_print(uint32_t e_old) {
         
         Entropy = Entropy << 4 | (HAL_ADC_GetValue(&hadc1) & 0x0000000F);
         // printf("%f,",(float)HAL_ADC_GetValue(&hadc1)/4095*3.3f);
-        //printf("%08X\n",HAL_ADC_GetValue(&hadc1));
+        //printf("%08X\n",HAL_ADC_GetValue(&hadc1)); 
         // HAL_Delay(1);
     }
-    // printf("%08x\n",Entropy);
+    //printf("%08x\n",Entropy); return;
     if(Entropy==0 || Entropy == UINT32_MAX){
         host_msg_analysis(HOST_MSG_TRNG_ERROR);
     }

@@ -4,6 +4,30 @@ import matplotlib.pyplot as plt
 
 import random
 
+import binascii
+bytes_to_list = lambda data: [i for i in data]
+
+# SM3 {
+def readAndSolve_SM3():
+    from gmssl import sm3
+    # sm3.sm3_hash(bytes_to_list(b'hello world'))
+    b = b'0'*512
+    dataSize = 0
+    with open('./Edata10.txt','rb') as fe:
+        with open('./data_SM3_10.txt','wb') as fsm3:
+            while True:
+                b = fe.read(256//8) + b[:256//8]
+                if len(b) < 512//8:
+                    break
+                fsm3.write(binascii.a2b_hex(sm3.sm3_hash(bytes_to_list(b))))
+                dataSize += 256//8
+                if dataSize % 1024**2 == 0:
+                    print('dataSize =',dataSize/1024,'kb')
+    print('dataSize =',dataSize/1024/1024,'mb')
+    print('======end======')
+
+
+# }
 ser = None
 
 # 显示可用串口
@@ -45,7 +69,7 @@ def SendFrame(ser:serial.Serial, frame:bytes):
 
 def plotBars(data:list):
     plt.clf()
-    print([d/sum(data) for d in data])
+    # print([d/sum(data) for d in data])
     plt.bar(range(len(data)), [d/sum(data) for d in data])
     plt.title('Data lenth ='+str(sum(data)))
     plt.pause(0.001)
@@ -60,13 +84,12 @@ def plothistogram(data:list):
 def readAndSolve_e(ser:serial.Serial):
     sumData = [0]*16
     data = b''
-    with open('Edata6.txt','ab') as f:
+    with open('Edata10.txt','ab') as f:
         while True:
             ser.write(b'1\n')
             data += read_serial_e(ser)
             if len(data) == 128*16:
-                # data1 = binascii.b2a_hex(data).decode('utf-8')
-                
+                # data1 = binascii.b2a_hex(data).decode('utf-8')                
                 # for i in data1:
                 #     sumData[int(i,16)] += 1
                 # plotBars(sumData)
@@ -75,11 +98,13 @@ def readAndSolve_e(ser:serial.Serial):
 
 def readAndSolve_v(ser:serial.Serial):
     data_v = []
-    with open('data_v.txt','wb') as f:
+    with open('data_v_trans.txt','wb') as f:
         for i in range(2**1024):
             ser.write(b'1\n')
             for _ in range(8):
-                data_v.append(int(read_serial_v(ser).decode('utf-8'),16)/4095*3.3)
+                d = int(read_serial_v(ser).decode('utf-8'),16)
+                f.write(str(d).encode('utf-8')+b'\n')
+                data_v.append(d/4095*3.3)
                 # data_v.append(random.gauss(1.65,0.1))
             # f.write(data)
             if i % 100 == 0:
@@ -120,5 +145,6 @@ def main():
     
 
 if __name__ == '__main__':
-    main()
+    # main()
+    readAndSolve_SM3()
 
