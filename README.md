@@ -1,4 +1,4 @@
-# »ùÓÚSM3µÄ¶àìØÔ´ÕæËæ»úÊý·¢ÉúÆ÷ 
+# åŸºäºŽSM3çš„å¤šç†µæºçœŸéšæœºæ•°å‘ç”Ÿå™¨ 
 
 ![TRNG](README/TRNG.jpg)
 
@@ -10,45 +10,48 @@
 
 
 
-## ÏÂÎ»»ú
+## ä¸‹ä½æœº
 
 ![image-20211128131433089](README/image-20211128131433089.png)
 
 ![image-20211128131307725](README/image-20211128131307725.png)
 
-¢Ù USB¿ÚÁ¬½ÓµçÄÔ
+â‘  USBå£è¿žæŽ¥ç”µè„‘
 
-¢Ú 0.91´çOLEDÏÔÊ¾ÆÁ½Ó¿Ú
+â‘¡ 0.91å¯¸OLEDæ˜¾ç¤ºå±æŽ¥å£
 
-¢Û µçÔ´Ö¸Ê¾µÆ
+â‘¢ ç”µæºæŒ‡ç¤ºç¯
 
-¢Ü ¹¤×÷Ö¸Ê¾µÆ
+â‘£ å·¥ä½œæŒ‡ç¤ºç¯
 
-¢Ý Ö§³Ö¸ü¶à¿ÉÑ¡ÍâÉèµÄÍØÕ¹¿Ú£¬Ö§³ÖÊ®Öá´«¸ÐÆ÷µÈ
+â‘¤ æ”¯æŒæ›´å¤šå¯é€‰å¤–è®¾çš„æ‹“å±•å£ï¼Œæ”¯æŒåè½´ä¼ æ„Ÿå™¨ç­‰
 
-¢Þ ÖØÖÃ°´Å¥
+â‘¥ é‡ç½®æŒ‰é’®
 
-¢ß ¿ÉÑ¡µÄÍâ²¿ÔëÉùADCÊäÈë¿Ú
+â‘¦ å¯é€‰çš„å¤–éƒ¨å™ªå£°ADCè¾“å…¥å£
 
-¢à µ÷ÊÔ¶Ë¿Ú
-
-
-½¨Òé VSCode ²å¼þ [Keil Assistant - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=CL.keil-assistant)
+â‘§ è°ƒè¯•ç«¯å£
 
 
-| ÏÂÎ»»úOLEDÐÅÏ¢    | ËµÃ÷                                   |
+å»ºè®® VSCode æ’ä»¶ [Keil Assistant - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=CL.keil-assistant)
+
+
+| ä¸‹ä½æœºOLEDä¿¡æ¯    | è¯´æ˜Ž                                   |
 | ----------------- | -------------------------------------- |
-| `:( msg time out` | µÈ´ýÉÏÎ»»úÏûÏ¢³¬Ê±                     |
-| `:(   NAK ERROR ` | NAK´íÎó                                |
-| `[TRNG]host stop` | ÉÏÎ»»úÖ÷¶¯ÖÕÖ¹³ÌÐò                     |
-| `:(   PKC ERROR ` | ÈÏÖ¤´íÎó                               |
-| `:(   TRNG ERROR` | ÕæËæ»úÊý´íÎó£¨ÈçÉÏÎ»»úÅÐ¶ÏìØ²»ÔÙËæ»ú£© |
-| `:(    PC ERROR ` | ÉÏÎ»»ú³ÌÐò´íÎó                         |
-| `:(  udef ERROR ` | Î´¶¨Òå´íÎó£¨³£¼ûÓÚ´®¿Ú´«Êä³ö´í£©       |
+| `:( msg time out` | ç­‰å¾…ä¸Šä½æœºæ¶ˆæ¯è¶…æ—¶                     |
+| `:(   NAK ERROR ` | NAKé”™è¯¯                                |
+| `[TRNG]host stop` | ä¸Šä½æœºä¸»åŠ¨ç»ˆæ­¢ç¨‹åº                     |
+| `:(   PKC ERROR ` | è®¤è¯é”™è¯¯                               |
+| `:(   TRNG ERROR` | çœŸéšæœºæ•°é”™è¯¯ï¼ˆå¦‚ä¸Šä½æœºåˆ¤æ–­ç†µä¸å†éšæœºï¼‰ |
+| `:(    PC ERROR ` | ä¸Šä½æœºç¨‹åºé”™è¯¯                         |
+| `:(  udef ERROR ` | æœªå®šä¹‰é”™è¯¯ï¼ˆå¸¸è§äºŽä¸²å£ä¼ è¾“å‡ºé”™ï¼‰       |
 
 
 
 
 
-## ÉÏÎ»»ú
+## ä¸Šä½æœº
+
+---
+Framecraft
 
